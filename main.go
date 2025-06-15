@@ -7,6 +7,8 @@ import (
 )
 
 func run() error {
+	ini.DefaultSection = "default" // else it does not work with `Insensitive`
+
 	options := ini.LoadOptions{
 		AllowNonUniqueSections: true,
 		Insensitive:            true,
@@ -22,9 +24,22 @@ func run() error {
 		return fmt.Errorf("failed to load default options: %w", err)
 	}
 
+	blocks := make([]*Block, 0, len(cfg.Sections())-1)
 	for _, section := range cfg.Sections() {
-		_, _ = NewBlock(section, defaultOptions)
-		println(section.Name())
+		if section.Name() == ini.DefaultSection {
+			continue
+		}
+
+		b, err := NewBlock(section, defaultOptions)
+		if err != nil {
+			return fmt.Errorf("failed to load block '%s': %w", section.Name(), err)
+		}
+
+		blocks = append(blocks, b)
+	}
+
+	for _, b := range blocks {
+		println(b.Run().Text)
 	}
 
 	return nil

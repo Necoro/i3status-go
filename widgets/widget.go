@@ -2,15 +2,24 @@ package widgets
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
 )
+
+type Data struct {
+	Text    string
+	Urgent  bool
+	Icon    rune
+	ColorFg string
+	ColorBg string
+}
 
 type Widget interface {
 	// Name of this widget
 	Name() string
 	// Run the widget
-	Run()
+	Run() Data
 	// Params of the widget to be filled with configured values.
 	// Must return a map[string] or a pointer to a struct.
 	// The returned value can already contain default values.
@@ -22,11 +31,21 @@ type WidgetConstructor = func() Widget
 var registry = make(map[string]WidgetConstructor)
 
 func Register(name string, w WidgetConstructor) {
+	name = strings.ToLower(name)
 	if _, ok := registry[name]; ok {
 		panic("Duplicate widget: " + name)
 	}
 
 	registry[name] = w
+}
+
+func Get(name string) (Widget, error) {
+	name = strings.ToLower(name)
+	w, ok := registry[name]
+	if !ok {
+		return nil, fmt.Errorf("unknown widget: %s", name)
+	}
+	return w(), nil
 }
 
 func Configure(w Widget, data map[string]string) error {

@@ -22,13 +22,18 @@ var DefaultBlock = &Block{
 
 func NewBlock(section *ini.Section, defaults *Block) (*Block, error) {
 	name := section.Name()
-	if name != ini.DefaultSection {
-		// TODO
-	}
-
 	var b Block
 	if defaults != nil {
 		b = *defaults
+	}
+
+	if name != ini.DefaultSection {
+		w, err := widgets.Get(name)
+		if err != nil {
+			return nil, err
+		}
+
+		b.Widget = w
 	}
 
 	if err := b.loadValues(section.KeysHash()); err != nil {

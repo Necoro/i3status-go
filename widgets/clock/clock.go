@@ -1,6 +1,14 @@
 package clock
 
-import "github.com/Necoro/i3status-go/widgets"
+import (
+	"time"
+
+	"golang.org/x/text/language"
+
+	"github.com/goodsign/monday"
+
+	"github.com/Necoro/i3status-go/widgets"
+)
 
 const name = "clock"
 
@@ -10,12 +18,15 @@ type Params struct {
 }
 
 type Widget struct {
-	params Params
+	params   Params
+	formatFn func() string
 }
 
 func init() {
 	widgets.Register(name, func() widgets.Widget {
-		return &Widget{}
+		return &Widget{params: Params{
+			Format: "Jan _2 Mon 15:04:05",
+		}}
 	})
 }
 
@@ -23,10 +34,44 @@ func (c *Widget) Name() string {
 	return name
 }
 
-func (c *Widget) Run() {
-	panic("implement me")
+func matchLocale(l string) monday.Locale {
+	locales := monday.ListLocales()
+	localeTags := make([]language.Tag, len(locales))
+	for i := range locales {
+		localeTags[i] = language.Make(string(locales[i]))
+	}
+
+	m := language.NewMatcher(localeTags)
+
+	t, i, _ := m.Match(language.Make(l))
+	println(t.String())
+	return locales[i]
+}
+
+func (c *Widget) determineFormat() {
+	formatStr := c.params.Format
+	if c.params.Locale == "" {
+		c.formatFn = func() string {
+			return time.Now().Format(formatStr)
+		}
+	} else {
+		locale := matchLocale(c.params.Locale)
+		c.formatFn = func() string {
+			return monday.Format(time.Now(), formatStr, locale)
+		}
+	}
+}
+
+func (c *Widget) Run() widgets.Data {
+	if c.formatFn == nil {
+		c.determineFormat()
+	}
+
+	return widgets.Data{
+		Text: c.formatFn(),
+	}
 }
 
 func (c *Widget) Params() any {
-	return &Params{Format: "Jan _2 Mon 15:04:05"}
+	return &c.params
 }
