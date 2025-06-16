@@ -31,12 +31,14 @@ type I3BarBlock struct {
 	SeparatorBlockWidth uint16  `json:"separator_block_width,omitempty"`
 }
 
-func NewI3BarBlock(d widgets.Data) I3BarBlock {
+func NewI3BarBlock(b *Block, d widgets.Data) I3BarBlock {
 	return I3BarBlock{
 		FullText:        d.FullText(),
 		Color:           d.ColorFg,
 		BackgroundColor: d.ColorBg,
 		Urgent:          d.Urgent,
+		Name:            b.Widget.Name(),
+		Instance:        b.Qualifier,
 	}
 }
 

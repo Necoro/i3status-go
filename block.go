@@ -9,9 +9,10 @@ import (
 )
 
 type Block struct {
-	Widget   widgets.Widget `mapstructure:"-"`
-	Interval int
-	ColorFg  string `mapstructure:"color"`
+	Widget    widgets.Widget `mapstructure:"-"`
+	Qualifier string         `mapstructure:"-"`
+	Interval  int
+	ColorFg   string `mapstructure:"color"`
 }
 
 var defaultBlock = &Block{
@@ -37,6 +38,7 @@ func NewBlock(section Section, defaults *Block) (*Block, error) {
 	}
 
 	b.Widget = w
+	b.Qualifier = section.Qualifier
 
 	if err := b.loadValues(section.Params); err != nil {
 		return nil, fmt.Errorf("failed to load values for block %s: %w", section.FullName(), err)

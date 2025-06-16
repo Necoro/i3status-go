@@ -32,7 +32,7 @@ func writeStatus(blocks []*Block) error {
 		msgs := make([]I3BarBlock, len(blocks))
 		for i, b := range blocks {
 			d := b.Run()
-			msgs[i] = NewI3BarBlock(d)
+			msgs[i] = NewI3BarBlock(b, d)
 		}
 		if err := encoder.Encode(msgs); err != nil {
 			return fmt.Errorf("failed to encode blocks: %w", err)
