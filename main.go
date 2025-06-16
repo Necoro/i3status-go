@@ -47,7 +47,12 @@ func writeStatus(blocks []*Block) error {
 }
 
 func run() error {
-	cfg, err := LoadConfig("/home/necoro/dev/i3status-go/test.config")
+	if len(os.Args) < 2 {
+		return fmt.Errorf("no config file given")
+	}
+
+	fileName := os.Args[1]
+	cfg, err := LoadConfig(fileName)
 	if err != nil {
 		return fmt.Errorf("failed to load config '%s': %w", "test.config", err)
 	}
@@ -73,6 +78,7 @@ func run() error {
 func main() {
 	err := run()
 	if err != nil {
-		panic(err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
 	}
 }
