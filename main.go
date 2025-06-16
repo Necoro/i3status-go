@@ -4,10 +4,38 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sync"
 	"time"
 )
 
 var i3Output = os.Stdout
+
+func runBlocks(encoder *json.Encoder, blocks []*Block) error {
+	msgs := make([]I3BarBlock, len(blocks))
+
+	var wg sync.WaitGroup
+	wg.Add(len(blocks))
+
+	for i, b := range blocks {
+		go func() {
+			d := b.Run()
+			msgs[i] = NewI3BarBlock(b, d)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+
+	if err := encoder.Encode(msgs); err != nil {
+		return fmt.Errorf("failed to encode blocks: %w", err)
+	}
+
+	if _, err := i3Output.WriteString(","); err != nil {
+		return fmt.Errorf("failed to write: %w", err)
+	}
+
+	return nil
+}
 
 func writeStatus(blocks []*Block) error {
 	encoder := json.NewEncoder(i3Output)
@@ -28,22 +56,21 @@ func writeStatus(blocks []*Block) error {
 		return fmt.Errorf("failed to write: %w", err)
 	}
 
-	for {
-		msgs := make([]I3BarBlock, len(blocks))
-		for i, b := range blocks {
-			d := b.Run()
-			msgs[i] = NewI3BarBlock(b, d)
-		}
-		if err := encoder.Encode(msgs); err != nil {
-			return fmt.Errorf("failed to encode blocks: %w", err)
-		}
-
-		if _, err := i3Output.WriteString(","); err != nil {
-			return fmt.Errorf("failed to write: %w", err)
-		}
-
-		time.Sleep(5 * time.Second)
+	// first
+	if err := runBlocks(encoder, blocks); err != nil {
+		return err
 	}
+
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	for _ = range ticker.C {
+		if err := runBlocks(encoder, blocks); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func run() error {
