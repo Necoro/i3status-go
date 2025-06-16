@@ -8,16 +8,37 @@ import (
 	"github.com/Necoro/i3status-go/widgets"
 )
 
+type Align string
+
+const (
+	AlignLeft   Align = "left"
+	AlignCenter Align = "center"
+	AlignRight  Align = "right"
+)
+
+type Markup string
+
+const (
+	MarkupPango Markup = "pango"
+	MarkupNone  Markup = "none"
+)
+
 type Block struct {
 	Widget    widgets.Widget `mapstructure:"-"`
 	Qualifier string         `mapstructure:"-"`
 	Interval  int
 	ColorFg   string `mapstructure:"color"`
+	Align     Align
+	MinWidth  string
+	Separator bool
+	Markup    Markup
 }
 
 var defaultBlock = &Block{
-	Interval: 5,
-	ColorFg:  "#ffffff",
+	Interval:  5,
+	ColorFg:   "#ffffff",
+	Separator: true,
+	Markup:    MarkupPango,
 }
 
 func GlobalBlock(globalParams Params) (*Block, error) {

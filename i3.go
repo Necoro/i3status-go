@@ -22,12 +22,12 @@ type I3BarBlock struct {
 	BorderRight         *uint16 `json:"border_right,omitempty"`
 	BackgroundColor     string  `json:"background,omitempty"`
 	Markup              string  `json:"markup,omitempty"`
-	MinWidth            *uint16 `json:"min_width,omitempty"`
+	MinWidth            string  `json:"min_width,omitempty"`
 	Align               string  `json:"align,omitempty"`
 	Name                string  `json:"name,omitempty"`
 	Instance            string  `json:"instance,omitempty"`
 	Urgent              bool    `json:"urgent,omitempty"`
-	Separator           *bool   `json:"separator,omitempty"`
+	Separator           bool    `json:"separator"`
 	SeparatorBlockWidth uint16  `json:"separator_block_width,omitempty"`
 }
 
@@ -39,6 +39,10 @@ func NewI3BarBlock(b *Block, d widgets.Data) I3BarBlock {
 		Urgent:          d.Urgent,
 		Name:            b.Widget.Name(),
 		Instance:        b.Qualifier,
+		Align:           string(b.Align),
+		MinWidth:        b.MinWidth,
+		Separator:       b.Separator,
+		Markup:          string(b.Markup),
 	}
 }
 
