@@ -1,5 +1,7 @@
 package main
 
+import "github.com/Necoro/i3status-go/widgets"
+
 // I3BarHeader represents the header of an i3bar message.
 type I3BarHeader struct {
 	Version     uint8 `json:"version"`
@@ -27,6 +29,15 @@ type I3BarBlock struct {
 	Urgent              bool    `json:"urgent,omitempty"`
 	Separator           *bool   `json:"separator,omitempty"`
 	SeparatorBlockWidth uint16  `json:"separator_block_width,omitempty"`
+}
+
+func NewI3BarBlock(d widgets.Data) I3BarBlock {
+	return I3BarBlock{
+		FullText:        d.FullText(),
+		Color:           d.ColorFg,
+		BackgroundColor: d.ColorBg,
+		Urgent:          d.Urgent,
+	}
 }
 
 // I3BarClickEvent represents a user click event message.

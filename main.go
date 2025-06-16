@@ -1,10 +1,53 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/go-ini/ini"
 )
+
+var i3Output = os.Stdout
+
+func writeStatus(blocks []*Block) error {
+	encoder := json.NewEncoder(i3Output)
+	encoder.SetEscapeHTML(false) // may contain Pango markup
+	encoder.SetIndent("", "")    // don't indent
+
+	hdr := I3BarHeader{
+		Version:     1,     // required
+		ClickEvents: false, // not supported atm
+		StopSignal:  0,     // ignore this for the moment
+		ContSignal:  0,
+	}
+
+	if err := encoder.Encode(hdr); err != nil {
+		return fmt.Errorf("failed to encode header: %w", err)
+	}
+
+	if _, err := i3Output.WriteString("[[]\n,"); err != nil {
+		return fmt.Errorf("failed to write: %w", err)
+	}
+
+	for {
+		msgs := make([]I3BarBlock, len(blocks))
+		for i, b := range blocks {
+			d := b.Run()
+			msgs[i] = NewI3BarBlock(d)
+		}
+		if err := encoder.Encode(msgs); err != nil {
+			return fmt.Errorf("failed to encode blocks: %w", err)
+		}
+
+		if _, err := i3Output.WriteString(","); err != nil {
+			return fmt.Errorf("failed to write: %w", err)
+		}
+
+		time.Sleep(5 * time.Second)
+	}
+}
 
 func run() error {
 	ini.DefaultSection = "default" // else it does not work with `Insensitive`
@@ -38,11 +81,7 @@ func run() error {
 		blocks = append(blocks, b)
 	}
 
-	for _, b := range blocks {
-		println(b.Run().Text)
-	}
-
-	return nil
+	return writeStatus(blocks)
 }
 
 func main() {

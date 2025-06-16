@@ -15,6 +15,13 @@ type Data struct {
 	ColorBg string
 }
 
+func (d Data) FullText() string {
+	if d.Icon != 0 {
+		return string(d.Icon) + " " + d.Text
+	}
+	return d.Text
+}
+
 type Widget interface {
 	// Name of this widget
 	Name() string

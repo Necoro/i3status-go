@@ -43,8 +43,7 @@ func matchLocale(l string) monday.Locale {
 
 	m := language.NewMatcher(localeTags)
 
-	t, i, _ := m.Match(language.Make(l))
-	println(t.String())
+	_, i, _ := m.Match(language.Make(l))
 	return locales[i]
 }
 

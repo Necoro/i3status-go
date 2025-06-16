@@ -10,9 +10,9 @@ import (
 )
 
 type Block struct {
-	widgets.Widget `mapstructure:"-"`
-	Interval       int
-	ColorFg        string
+	Widget   widgets.Widget `mapstructure:"-"`
+	Interval int
+	ColorFg  string
 }
 
 var DefaultBlock = &Block{
@@ -72,4 +72,14 @@ func (b *Block) loadValues(data map[string]string) error {
 	}
 
 	return widgets.Configure(b.Widget, widgetData)
+}
+
+func (b *Block) Run() widgets.Data {
+	d := b.Widget.Run()
+
+	if d.ColorFg == "" {
+		d.ColorFg = b.ColorFg
+	}
+
+	return d
 }
