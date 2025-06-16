@@ -60,6 +60,13 @@ func (w Widget) Run() widgets.Data {
 
 }
 
+func (w Widget) Shutdown() {
+	if w.client != nil {
+		_ = w.client.Close()
+		w.client = nil
+	}
+}
+
 func (w Widget) Params() any {
 	return &w.params
 }

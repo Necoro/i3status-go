@@ -27,6 +27,8 @@ type Widget interface {
 	Name() string
 	// Run the widget
 	Run() Data
+	// Shutdown the widget cleanly
+	Shutdown()
 	// Params of the widget to be filled with configured values.
 	// Must return a map[string] or a pointer to a struct.
 	// The returned value can already contain default values.

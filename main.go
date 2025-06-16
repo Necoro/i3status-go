@@ -99,7 +99,15 @@ func run() error {
 		blocks = append(blocks, b)
 	}
 
-	return writeStatus(blocks)
+	if err = writeStatus(blocks); err != nil {
+		return err
+	}
+
+	for _, b := range blocks {
+		b.Widget.Shutdown()
+	}
+
+	return nil
 }
 
 func main() {

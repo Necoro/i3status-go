@@ -74,3 +74,6 @@ func (c *Widget) Run() widgets.Data {
 func (c *Widget) Params() any {
 	return &c.params
 }
+
+func (c *Widget) Shutdown() {
+}
