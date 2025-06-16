@@ -17,10 +17,9 @@ func writeStatus(blocks []*Block) error {
 	encoder.SetIndent("", "")    // don't indent
 
 	hdr := I3BarHeader{
-		Version:     1,     // required
-		ClickEvents: false, // not supported atm
-		StopSignal:  0,     // ignore this for the moment
-		ContSignal:  0,
+		Version:     1,        // required
+		ClickEvents: false,    // not supported atm
+		StopSignal:  new(int), // ignore this for the moment
 	}
 
 	if err := encoder.Encode(hdr); err != nil {

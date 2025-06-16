@@ -5,8 +5,8 @@ import "github.com/Necoro/i3status-go/widgets"
 // I3BarHeader represents the header of an i3bar message.
 type I3BarHeader struct {
 	Version     uint8 `json:"version"`
-	StopSignal  int   `json:"stop_signal,omitempty"`
-	ContSignal  int   `json:"cont_signal,omitempty"`
+	StopSignal  *int  `json:"stop_signal,omitempty"`
+	ContSignal  *int  `json:"cont_signal,omitempty"`
 	ClickEvents bool  `json:"click_events,omitempty"`
 }
 
