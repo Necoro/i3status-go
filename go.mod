@@ -3,6 +3,7 @@ module github.com/Necoro/i3status-go
 go 1.24
 
 require (
+	github.com/Necoro/go-units v0.0.0-20250618101755-a44f74fcaa76
 	github.com/alecthomas/participle/v2 v2.1.4
 	github.com/go-viper/mapstructure/v2 v2.2.1
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
@@ -11,6 +12,7 @@ require (
 )
 
 require (
+	github.com/bcicen/bfstree v1.0.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/josharian/native v1.1.0 // indirect
 	github.com/mdlayher/genetlink v1.3.2 // indirect

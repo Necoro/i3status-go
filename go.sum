@@ -1,9 +1,13 @@
+github.com/Necoro/go-units v0.0.0-20250618101755-a44f74fcaa76 h1:OaOwC4lTX30YaDwrvda4N+NMbDdKnDGlpT/fM86Lfyo=
+github.com/Necoro/go-units v0.0.0-20250618101755-a44f74fcaa76/go.mod h1:GNwCMyndNLW6JDfBnv710+YiqG88wiH9o283xv/EkBw=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
 github.com/alecthomas/assert/v2 v2.11.0/go.mod h1:Bze95FyfUr7x34QZrjL+XP+0qgp/zg8yS+TtBj1WA3k=
 github.com/alecthomas/participle/v2 v2.1.4 h1:W/H79S8Sat/krZ3el6sQMvMaahJ+XcM9WSI2naI7w2U=
 github.com/alecthomas/participle/v2 v2.1.4/go.mod h1:8tqVbpTX20Ru4NfYQgZf4mP18eXPTBViyMWiArNEgGI=
 github.com/alecthomas/repr v0.4.0 h1:GhI2A8MACjfegCPVq9f1FLvIBS+DrQ2KQBFZP1iFzXc=
 github.com/alecthomas/repr v0.4.0/go.mod h1:Fr0507jx4eOXV7AlPV6AVZLYrLIuIeSOWtW57eE/O/4=
+github.com/bcicen/bfstree v1.0.0 h1:Fx9vcyXYspj2GIJqAvd1lwCNI+cQF/r2JJqxHHmsAO0=
+github.com/bcicen/bfstree v1.0.0/go.mod h1:u//juIip96SNFkG4iMn9z0KzqLSeFSpBKoBo5ceq1uE=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-viper/mapstructure/v2 v2.2.1 h1:ZAaOCxANMuZx5RCeg0mBdEZk7DZasvvZIxtHqx8aGss=
