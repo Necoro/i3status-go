@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
 
@@ -26,10 +27,10 @@ const (
 )
 
 type Block struct {
-	Widget    widgets.Widget `mapstructure:"-"`
-	Qualifier string         `mapstructure:"-"`
+	Widget    widgets.Widget `config:"-"`
+	Qualifier string         `config:"-"`
 	Interval  int
-	ColorFg   string `mapstructure:"color"`
+	ColorFg   string `config:"color"`
 	Align     Align
 	MinWidth  string
 	Separator bool
@@ -70,13 +71,24 @@ func NewBlock(section Section, defaults *Block) (*Block, error) {
 	return &b, nil
 }
 
-func (b *Block) loadValues(data Params) error {
+func matchConfigKey(mapKey, fieldName string) bool {
+	mapKey = strings.ReplaceAll(mapKey, "_", "")
+	return strings.EqualFold(mapKey, fieldName)
+}
+
+func decoderConfig() *mapstructure.DecoderConfig {
 	metadata := mapstructure.Metadata{}
-	config := &mapstructure.DecoderConfig{
+	return &mapstructure.DecoderConfig{
 		Metadata:         &metadata,
 		WeaklyTypedInput: true,
-		Result:           b,
+		TagName:          "config",
+		MatchName:        matchConfigKey,
 	}
+}
+
+func (b *Block) loadValues(data Params) error {
+	config := decoderConfig()
+	config.Result = b
 
 	decoder, err := mapstructure.NewDecoder(config)
 	if err != nil {
@@ -94,11 +106,11 @@ func (b *Block) loadValues(data Params) error {
 
 	// subset of keys not used for this block
 	widgetData := make(Params)
-	for _, k := range metadata.Unused {
+	for _, k := range config.Metadata.Unused {
 		widgetData[k] = data[k]
 	}
 
-	return widgets.Configure(b.Widget, widgetData)
+	return widgets.Configure(b.Widget, widgetData, decoderConfig())
 }
 
 func (b *Block) Run() widgets.Data {

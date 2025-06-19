@@ -57,15 +57,9 @@ func Get(name string) (Widget, error) {
 	return w(), nil
 }
 
-func Configure(w Widget, data map[string]string) error {
+func Configure(w Widget, data map[string]string, config *mapstructure.DecoderConfig) error {
 	p := w.Params()
-
-	metadata := mapstructure.Metadata{}
-	config := &mapstructure.DecoderConfig{
-		Metadata:         &metadata,
-		WeaklyTypedInput: true,
-		Result:           p,
-	}
+	config.Result = p
 
 	decoder, err := mapstructure.NewDecoder(config)
 	if err != nil {
