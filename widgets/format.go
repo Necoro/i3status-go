@@ -49,7 +49,7 @@ func scale(digits int, value u.Value) string {
 // as converts the unit
 func as(symbol string, value u.Value) u.Value {
 	unit, _ := u.Find(symbol)
-	if unit == nil {
+	if unit == nil || value.Unit() == nil {
 		return value
 	}
 	return value.MustConvert(unit)

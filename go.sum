@@ -1,5 +1,7 @@
 github.com/Necoro/go-units v0.0.0-20250618101755-a44f74fcaa76 h1:OaOwC4lTX30YaDwrvda4N+NMbDdKnDGlpT/fM86Lfyo=
 github.com/Necoro/go-units v0.0.0-20250618101755-a44f74fcaa76/go.mod h1:GNwCMyndNLW6JDfBnv710+YiqG88wiH9o283xv/EkBw=
+github.com/Necoro/go-units v0.0.0-20250619215816-fdff1af54642 h1:05LUV9tiBoYpfhRhlkDQYNum3AJbWzsSENES1JhkcWE=
+github.com/Necoro/go-units v0.0.0-20250619215816-fdff1af54642/go.mod h1:GNwCMyndNLW6JDfBnv710+YiqG88wiH9o283xv/EkBw=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
 github.com/alecthomas/assert/v2 v2.11.0/go.mod h1:Bze95FyfUr7x34QZrjL+XP+0qgp/zg8yS+TtBj1WA3k=
 github.com/alecthomas/participle/v2 v2.1.4 h1:W/H79S8Sat/krZ3el6sQMvMaahJ+XcM9WSI2naI7w2U=

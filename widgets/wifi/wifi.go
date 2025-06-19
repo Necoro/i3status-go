@@ -15,12 +15,15 @@ type Params struct {
 	// Format the output string. Takes a Go template string.
 	Format    string
 	Interface string
+	// DownFormat is the format for when the interface is down.
+	DownFormat string
 }
 
 type Widget struct {
-	params    Params
-	client    *wifi.Client
-	formatter widgets.Formatter
+	params        Params
+	client        *wifi.Client
+	formatter     widgets.Formatter
+	downFormatter widgets.Formatter
 }
 
 type Data struct {
@@ -34,6 +37,7 @@ type Data struct {
 	Frequency u.Value
 	Signal    string
 	Quality   string
+	up        bool
 }
 
 func (w *Widget) format(data Data) (string, error) {
@@ -46,6 +50,18 @@ func (w *Widget) format(data Data) (string, error) {
 	}
 
 	return w.formatter(data)
+}
+
+func (w *Widget) formatDown(data Data) (string, error) {
+	if w.downFormatter == nil {
+		if downFormatter, err := widgets.NewFormatter(w.params.DownFormat); err != nil {
+			return "", err
+		} else {
+			w.downFormatter = downFormatter
+		}
+	}
+
+	return w.downFormatter(data)
 }
 
 func (w *Widget) Name() string {
@@ -78,7 +94,8 @@ func (w *Widget) Run() (d widgets.Data, err error) {
 			return
 		}
 
-		if net.FlagRunning&iface.Flags != 0 { // interface is up
+		data.up = net.FlagRunning&iface.Flags != 0
+		if data.up {
 			var lErr error
 			bss, lErr := w.client.BSS(ifc)
 			if lErr != nil {
@@ -111,7 +128,12 @@ func (w *Widget) Run() (d widgets.Data, err error) {
 		break
 	}
 
-	d.Text, err = w.format(data)
+	if data.up {
+		d.Text, err = w.format(data)
+	} else {
+		d.Text, err = w.formatDown(data)
+	}
+
 	return
 }
 
@@ -129,7 +151,8 @@ func (w *Widget) Params() any {
 func init() {
 	widgets.Register(name, func() widgets.Widget {
 		return &Widget{params: Params{
-			Format: "{{.Interface}}: {{.SSID}} {{.Frequency | As GHz}}",
+			Format:     "{{.Interface}}: {{.SSID}} {{.Frequency | As GHz}}",
+			DownFormat: "{{.Interface}}: not connected",
 		}}
 	})
 }
