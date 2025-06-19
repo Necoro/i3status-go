@@ -12,7 +12,7 @@ import (
 const name = "wifi"
 
 type Params struct {
-	//Format the output string. Takes a Go template string.
+	// Format the output string. Takes a Go template string.
 	Format    string
 	Interface string
 }
@@ -52,11 +52,16 @@ func (w *Widget) Name() string {
 	return name
 }
 
-func (w *Widget) Run() widgets.Data {
+func (w *Widget) Run() (d widgets.Data, err error) {
 	if w.client == nil {
-		w.client, _ = wifi.New()
+		if w.client, err = wifi.New(); err != nil {
+			return
+		}
 	}
-	ifs, _ := w.client.Interfaces()
+	ifs, err := w.client.Interfaces()
+	if err != nil {
+		return
+	}
 
 	var data Data
 	for _, ifc := range ifs {
@@ -65,15 +70,31 @@ func (w *Widget) Run() widgets.Data {
 			(w.params.Interface != "" && ifc.Name != w.params.Interface) {
 			continue
 		}
+
 		data.Interface = ifc.Name
-		iface, _ := net.InterfaceByName(ifc.Name)
-		if net.FlagRunning&iface.Flags != 0 {
-			// interface is up
-			bss, _ := w.client.BSS(ifc)
+
+		var iface *net.Interface
+		if iface, err = net.InterfaceByName(ifc.Name); err != nil {
+			return
+		}
+
+		if net.FlagRunning&iface.Flags != 0 { // interface is up
+			var lErr error
+			bss, lErr := w.client.BSS(ifc)
+			if lErr != nil {
+				err = lErr
+				return
+			}
+
 			data.SSID = bss.SSID
 			data.Frequency = u.NewValue(float64(bss.Frequency), u.MegaHertz)
 
-			addrs, _ := iface.Addrs()
+			addrs, lErr := iface.Addrs()
+			if lErr != nil {
+				err = lErr
+				return
+			}
+
 			for _, addr := range addrs {
 				ip, ok := addr.(*net.IPNet)
 				if !ok || !ip.IP.IsGlobalUnicast() {
@@ -90,14 +111,8 @@ func (w *Widget) Run() widgets.Data {
 		break
 	}
 
-	text, err := w.format(data)
-	if err != nil {
-		panic(err)
-	}
-	return widgets.Data{
-		Text: text,
-	}
-
+	d.Text, err = w.format(data)
+	return
 }
 
 func (w *Widget) Shutdown() {

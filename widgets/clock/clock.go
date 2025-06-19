@@ -61,14 +61,14 @@ func (c *Widget) determineFormat() {
 	}
 }
 
-func (c *Widget) Run() widgets.Data {
+func (c *Widget) Run() (widgets.Data, error) {
 	if c.formatFn == nil {
 		c.determineFormat()
 	}
 
 	return widgets.Data{
 		Text: c.formatFn(),
-	}
+	}, nil
 }
 
 func (c *Widget) Params() any {

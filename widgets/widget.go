@@ -26,7 +26,7 @@ type Widget interface {
 	// Name of this widget
 	Name() string
 	// Run the widget
-	Run() Data
+	Run() (Data, error)
 	// Shutdown the widget cleanly
 	Shutdown()
 	// Params of the widget to be filled with configured values.

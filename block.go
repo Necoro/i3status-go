@@ -8,6 +8,8 @@ import (
 	"github.com/Necoro/i3status-go/widgets"
 )
 
+const errorColor = "#FF262A"
+
 type Align string
 
 const (
@@ -100,7 +102,15 @@ func (b *Block) loadValues(data Params) error {
 }
 
 func (b *Block) Run() widgets.Data {
-	d := b.Widget.Run()
+	d, err := b.Widget.Run()
+
+	if err != nil {
+		return widgets.Data{
+			Text:    err.Error(),
+			Urgent:  true,
+			ColorFg: errorColor,
+		}
+	}
 
 	if d.ColorFg == "" {
 		d.ColorFg = b.ColorFg
