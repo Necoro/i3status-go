@@ -1,6 +1,8 @@
 package wifi
 
 import (
+	"net"
+
 	u "github.com/Necoro/go-units"
 	"github.com/mdlayher/wifi"
 
@@ -22,6 +24,7 @@ type Widget struct {
 }
 
 type Data struct {
+	IPv6 string
 	IPv4 string
 	// SSID of the connected network.
 	SSID string
@@ -63,10 +66,27 @@ func (w *Widget) Run() widgets.Data {
 			continue
 		}
 		data.Interface = ifc.Name
+		iface, _ := net.InterfaceByName(ifc.Name)
+		if net.FlagRunning&iface.Flags != 0 {
+			// interface is up
+			bss, _ := w.client.BSS(ifc)
+			data.SSID = bss.SSID
+			data.Frequency = u.NewValue(float64(bss.Frequency), u.MegaHertz)
 
-		bss, _ := w.client.BSS(ifc)
-		data.SSID = bss.SSID
-		data.Frequency = u.NewValue(float64(bss.Frequency), u.MegaHertz)
+			addrs, _ := iface.Addrs()
+			for _, addr := range addrs {
+				ip, ok := addr.(*net.IPNet)
+				if !ok || !ip.IP.IsGlobalUnicast() {
+					continue
+				}
+
+				if ip.IP.To4() != nil {
+					data.IPv4 = ip.String()
+				} else {
+					data.IPv6 = ip.String()
+				}
+			}
+		}
 		break
 	}
 
