@@ -12,6 +12,8 @@ foo = bar
 fux = "baz"
 a = 1.2
 c = #ffffff
+empty =
+empty2 = ""
 `
 	expected := Config{
 		GlobalParams: []Parameter{
@@ -19,6 +21,8 @@ c = #ffffff
 			{"fux", "baz"},
 			{"a", "1.2"},
 			{"c", "#ffffff"},
+			{"empty", ""},
+			{"empty2", ""},
 		},
 	}
 
@@ -116,7 +120,7 @@ func TestInvalid(t *testing.T) {
 		{
 			"inline comment",
 			"foo #foo = bar",
-			"1:15: unexpected token \"<EOF>\" (expected <assign> (<string> | <value>))",
+			"1:15: unexpected token \"<EOF>\" (expected <assign> (<string> | <value>)?)",
 		},
 	}
 

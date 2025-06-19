@@ -15,7 +15,7 @@ type Config struct {
 
 type Parameter struct {
 	Name  string `@Ident Assign`
-	Value string `(@String | @Value)`
+	Value string `(@String | @Value)?`
 }
 
 type Section struct {
