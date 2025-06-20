@@ -125,9 +125,9 @@ func (w *Widget) Run() (d widgets.Data, err error) {
 				}
 
 				if ip.IP.To4() != nil {
-					data.IPv4 = ip.String()
+					data.IPv4 = ip.IP.String()
 				} else {
-					data.IPv6 = ip.String()
+					data.IPv6 = ip.IP.String()
 				}
 			}
 		}
