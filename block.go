@@ -26,28 +26,33 @@ const (
 	MarkupNone  Markup = "none"
 )
 
-type Block struct {
-	Widget    widgets.Widget `config:"-"`
-	Qualifier string         `config:"-"`
+type BlockConfig struct {
 	Interval  int
 	ColorFg   string `config:"color"`
 	Align     Align
 	MinWidth  string
 	Separator bool
 	Markup    Markup
+	Icon      rune
 }
 
-var defaultBlock = &Block{
+type Block struct {
+	Widget      widgets.Widget `config:"-"`
+	Qualifier   string         `config:"-"`
+	BlockConfig `config:",squash"`
+}
+
+var defaultConfig = BlockConfig{
 	Interval:  5,
 	ColorFg:   "#ffffff",
 	Separator: true,
-	Markup:    MarkupPango,
+	Markup:    MarkupNone,
 }
 
 func GlobalBlock(globalParams Params) (*Block, error) {
-	b := *defaultBlock
+	b := &Block{BlockConfig: defaultConfig}
 	err := b.loadValues(globalParams)
-	return &b, err
+	return b, err
 }
 
 func NewBlock(section Section, defaults *Block) (*Block, error) {
@@ -126,6 +131,10 @@ func (b *Block) Run() widgets.Data {
 
 	if d.ColorFg == "" {
 		d.ColorFg = b.ColorFg
+	}
+
+	if b.Icon != 0 {
+		d.Icon = b.Icon
 	}
 
 	return d

@@ -9,11 +9,15 @@ import (
 	"github.com/Necoro/i3status-go/widgets"
 )
 
-const name = "wifi"
+const (
+	name      = "wifi"
+	icon rune = '\uf1eb'
+)
 
 type Params struct {
 	// Format the output string. Takes a Go template string.
-	Format    string
+	Format string
+	// Interface to look for. If empty, it takes the first one.
 	Interface string
 	// DownFormat is the format for when the interface is down.
 	DownFormat string
@@ -69,6 +73,8 @@ func (w *Widget) Name() string {
 }
 
 func (w *Widget) Run() (d widgets.Data, err error) {
+	d.Icon = icon
+
 	if w.client == nil {
 		if w.client, err = wifi.New(); err != nil {
 			return
