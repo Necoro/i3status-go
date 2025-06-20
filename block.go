@@ -29,6 +29,9 @@ const (
 type BlockConfig struct {
 	Interval  int
 	ColorFg   string `config:"color"`
+	ColorGood string
+	ColorMid  string
+	ColorBad  string
 	Align     Align
 	MinWidth  string
 	Separator bool
@@ -45,6 +48,9 @@ type Block struct {
 var defaultConfig = BlockConfig{
 	Interval:  5,
 	ColorFg:   "#ffffff",
+	ColorGood: "#ffffff",
+	ColorMid:  "#ffff00",
+	ColorBad:  errorColor,
 	Separator: true,
 	Markup:    MarkupNone,
 }
@@ -130,7 +136,16 @@ func (b *Block) Run() widgets.Data {
 	}
 
 	if d.ColorFg == "" {
-		d.ColorFg = b.ColorFg
+		switch d.State {
+		case widgets.StateGood:
+			d.ColorFg = b.ColorGood
+		case widgets.StateMid:
+			d.ColorFg = b.ColorMid
+		case widgets.StateBad:
+			d.ColorFg = b.ColorBad
+		default:
+			d.ColorFg = b.ColorFg
+		}
 	}
 
 	if b.Icon != 0 {

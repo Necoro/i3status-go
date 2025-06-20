@@ -7,12 +7,22 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 )
 
+type State int8
+
+const (
+	StateUnknown State = iota
+	StateGood
+	StateMid
+	StateBad
+)
+
 type Data struct {
 	Text    string
 	Urgent  bool
 	Icon    rune
 	ColorFg string
 	ColorBg string
+	State   State
 }
 
 func (d Data) FullText() string {

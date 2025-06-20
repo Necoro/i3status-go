@@ -1,6 +1,8 @@
 package wifi
 
 import (
+	"bytes"
+	"math"
 	"net"
 
 	u "github.com/Necoro/go-units"
@@ -21,6 +23,10 @@ type Params struct {
 	Interface string
 	// DownFormat is the format for when the interface is down.
 	DownFormat string
+	// LevelGood is the lower bound for the good level.
+	LevelGood int
+	// LevelBad is the upper bound for the bad level.
+	LevelBad int
 }
 
 type Widget struct {
@@ -39,9 +45,9 @@ type Data struct {
 	Interface string
 	// Frequency in MHz
 	Frequency u.Value
-	Signal    string
-	Quality   string
-	up        bool
+	// Quality in percent (0-100).
+	Quality u.Value
+	up      bool
 }
 
 func (w *Widget) format(data Data) (string, error) {
@@ -70,6 +76,21 @@ func (w *Widget) formatDown(data Data) (string, error) {
 
 func (w *Widget) Name() string {
 	return name
+}
+
+func computeSignalQuality(signal int) float64 {
+	// from i3status-rust, in turn based on
+	// <https://github.com/torvalds/linux/blob/9ff9b0d392ea08090cd1780fb196f36dbb586529/drivers/net/wireless/intel/ipw2x00/ipw2200.c#L4322-L4334>
+	const (
+		max  = -20.
+		min  = -85.
+		diff = max - min
+	)
+
+	sig64 := float64(signal)
+
+	val := 100. - (max-sig64)*(15.*diff+62.*(max-sig64))/(diff*diff)
+	return math.Max(0., math.Min(100., val))
 }
 
 func (w *Widget) Run() (d widgets.Data, err error) {
@@ -111,6 +132,28 @@ func (w *Widget) Run() (d widgets.Data, err error) {
 
 			data.SSID = bss.SSID
 			data.Frequency = u.NewValue(float64(bss.Frequency), u.MegaHertz)
+
+			stationInfo, lErr := w.client.StationInfo(ifc)
+			if lErr != nil {
+				err = lErr
+				return
+			}
+			for _, si := range stationInfo {
+				if !bytes.Equal(si.HardwareAddr, bss.BSSID) {
+					continue
+				}
+				qual := computeSignalQuality(si.SignalAverage)
+				data.Quality = u.NewValue(qual, u.Percent)
+
+				if int(qual) >= w.params.LevelGood {
+					d.State = widgets.StateGood
+				} else if int(qual) < w.params.LevelBad {
+					d.State = widgets.StateBad
+				} else {
+					d.State = widgets.StateMid
+				}
+				break
+			}
 
 			addrs, lErr := iface.Addrs()
 			if lErr != nil {
@@ -159,6 +202,8 @@ func init() {
 		return &Widget{params: Params{
 			Format:     "{{.Interface}}: {{.SSID}} {{.Frequency | As GHz}}",
 			DownFormat: "{{.Interface}}: not connected",
+			LevelGood:  70,
+			LevelBad:   20,
 		}}
 	})
 }

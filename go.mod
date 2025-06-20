@@ -3,7 +3,7 @@ module github.com/Necoro/i3status-go
 go 1.24
 
 require (
-	github.com/Necoro/go-units v0.0.0-20250619215816-fdff1af54642
+	github.com/Necoro/go-units v0.0.0-20250620231131-f71d958bfeff
 	github.com/alecthomas/participle/v2 v2.1.4
 	github.com/go-viper/mapstructure/v2 v2.3.0
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
