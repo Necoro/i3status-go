@@ -17,8 +17,9 @@ type Formatter func(data any) (string, error)
 func NewFormatter(format string) (Formatter, error) {
 	tpl, err := template.New("Format").
 		Funcs(template.FuncMap{
-			"Scale": scale,
-			"As":    as,
+			"Scale":  scale,
+			"As":     as,
+			"NoUnit": noUnit,
 		}).
 		Parse(format)
 
@@ -36,13 +37,46 @@ func NewFormatter(format string) (Formatter, error) {
 	}, nil
 }
 
-// scale version needed for the template
-func scale(digits int, value u.Value) string {
-	hValue := value.Humanize()
-	return hValue.Fmt(u.FmtOptions{
+type valueFormat struct {
+	value u.Value
+	opts  u.FmtOptions
+}
+
+func newValueFormat(value u.Value) valueFormat {
+	return valueFormat{value: value, opts: u.FmtOptions{
 		Short:     true,
-		Precision: digits,
+		Precision: -1,
 		Label:     true,
+	}}
+}
+
+func (f valueFormat) String() string {
+	return f.value.Fmt(f.opts)
+}
+
+func valueFormatter(data any, fn func(vf valueFormat) valueFormat) valueFormat {
+	switch data := data.(type) {
+	case u.Value:
+		return fn(newValueFormat(data))
+	case valueFormat:
+		return fn(data)
+	default:
+		panic("invalid type")
+	}
+}
+
+// scale version needed for the template
+func scale(digits int, data any) valueFormat {
+	return valueFormatter(data, func(vf valueFormat) valueFormat {
+		vf.opts.Precision = digits
+		return vf
+	})
+}
+
+func noUnit(data any) valueFormat {
+	return valueFormatter(data, func(vf valueFormat) valueFormat {
+		vf.opts.Label = false
+		return vf
 	})
 }
 
