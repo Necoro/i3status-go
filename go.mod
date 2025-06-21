@@ -8,6 +8,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.3.0
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
 	github.com/mdlayher/wifi v0.5.0
+	github.com/prometheus/procfs v0.16.1
 	golang.org/x/text v0.26.0
 )
 

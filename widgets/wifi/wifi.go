@@ -13,7 +13,7 @@ import (
 
 const (
 	name      = "wifi"
-	icon rune = '\uf1eb'
+	icon rune = '\uf1eb' // 
 )
 
 type Params struct {
