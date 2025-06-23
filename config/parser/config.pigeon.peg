@@ -16,11 +16,10 @@ Parms <- lines:ParmLine* {
         return Params{}, nil
     }
 
-    anys := lines.([]any)
     parms := Params{}
-    for _, a := range anys {
-        if a != nil {
-            p := a.(param)
+    for _, l := range lines.([]any) {
+        if l != nil {
+            p := l.(param)
             parms[strings.ToLower(p.key)] = p.val
         }
     }
@@ -29,18 +28,19 @@ Parms <- lines:ParmLine* {
 }
 
 
-ParmLine <- line:(comment / Parm / _) NL {
-        if p, ok := line.(param); ok {
-            return p, nil
-        }
-        return nil, nil
+ParmLine <- line:(comment / Parm / _) '\n' {
+    if p, ok := line.(param); ok {
+        return p, nil
+    }
+    return nil, nil
 }
 
-Parm <- _ key:Ident _ Assign _ val:Val _ {
-        return param{key.(string), val.(string)}, nil
-    }
 
-Val <- v:(ValString / RawVal) { return v, nil }
+Parm <- _ key:Ident _ Assign _ val:Val _ {
+    return param{key.(string), val.(string)}, nil
+}
+
+Val <- ValString / RawVal
 RawVal <- [^\n]* { return string(c.text), nil }
 ValString <- ["] [^"\n]* ["] {
     // this is better than clubbing arrays of arrays of bytes together
@@ -48,7 +48,7 @@ ValString <- ["] [^"\n]* ["] {
         return string(c.text[1:l-1]), nil
     }
     return "", nil
-  }
+}
 
 
 Assign <- [=:]
@@ -67,32 +67,33 @@ Sections <- ss:Section* {
 }
 
 Section <- h:Header p:Parms {
-        s := h.(Section)
-        s.Params = p.(Params)
-        return s, nil
-    }
+    s := h.(Section)
+    s.Params = p.(Params)
+    return s, nil
+}
 
-Header <- _ '[' _ name:Ident qual:Qualifier? _ ']' _ comment? NL {
-        var q string
-        if qual != nil { q = qual.(string) }
-        s := Section{
-            Name: strings.ToLower(name.(string)),
-            Qualifier: strings.ToLower(q),
-         }
-        return s, nil
+Header <- _ '[' _ name:Ident qual:Qualifier? _ ']' _ comment? '\n' {
+    var q string
+    if qual != nil { q = qual.(string) }
+    s := Section{
+        Name: strings.ToLower(name.(string)),
+        Qualifier: strings.ToLower(q),
     }
+    return s, nil
+}
 
 Qualifier <- '.' q:Ident {
     return q.(string), nil
 }
 
 Ident <- [a-zA-Z0-9_]+ {
-     return string(c.text), nil
+    return string(c.text), nil
 }
 
 comment <- [;#] [^\n]*
 
-_ <- [ \t]*
-NL <- '\n'
+_ "Whitespace" <- [ \t]*
 
 EOF <- !.
+
+// vim:ft=pigeon
