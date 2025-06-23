@@ -6,6 +6,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/Necoro/i3status-go/config"
 )
 
 var i3Output = os.Stdout
@@ -79,7 +81,7 @@ func run() error {
 	}
 
 	fileName := os.Args[1]
-	cfg, err := LoadConfig(fileName)
+	cfg, err := config.Load(fileName)
 	if err != nil {
 		return fmt.Errorf("failed to load config '%s': %w", "test.config", err)
 	}

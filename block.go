@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-viper/mapstructure/v2"
 
+	"github.com/Necoro/i3status-go/config"
 	"github.com/Necoro/i3status-go/widgets"
 )
 
@@ -55,13 +56,13 @@ var defaultConfig = BlockConfig{
 	Markup:    MarkupNone,
 }
 
-func GlobalBlock(globalParams Params) (*Block, error) {
+func GlobalBlock(globalParams config.Params) (*Block, error) {
 	b := &Block{BlockConfig: defaultConfig}
 	err := b.loadValues(globalParams)
 	return b, err
 }
 
-func NewBlock(section Section, defaults *Block) (*Block, error) {
+func NewBlock(section config.Section, defaults *Block) (*Block, error) {
 	var b Block
 	if defaults != nil {
 		b = *defaults
@@ -97,11 +98,11 @@ func decoderConfig() *mapstructure.DecoderConfig {
 	}
 }
 
-func (b *Block) loadValues(data Params) error {
-	config := decoderConfig()
-	config.Result = b
+func (b *Block) loadValues(data config.Params) error {
+	decCfg := decoderConfig()
+	decCfg.Result = b
 
-	decoder, err := mapstructure.NewDecoder(config)
+	decoder, err := mapstructure.NewDecoder(decCfg)
 	if err != nil {
 		return err
 	}
@@ -116,8 +117,8 @@ func (b *Block) loadValues(data Params) error {
 	}
 
 	// subset of keys not used for this block
-	widgetData := make(Params)
-	for _, k := range config.Metadata.Unused {
+	widgetData := make(config.Params)
+	for _, k := range decCfg.Metadata.Unused {
 		widgetData[k] = data[k]
 	}
 
