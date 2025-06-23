@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/alecthomas/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestSimpleParams(t *testing.T) {
@@ -30,7 +30,7 @@ empty2 = ""
 	cfg, err := Parse("", []byte(config))
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, cfg)
+	assert.Equal(t, expected, cfg.(*Config))
 }
 
 func TestDuplicateParams(t *testing.T) {
@@ -54,7 +54,7 @@ capc = none
 	cfg, err := Parse("", []byte(config))
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, cfg)
+	assert.Equal(t, expected, cfg.(*Config))
 }
 
 func TestSection(t *testing.T) {
@@ -85,7 +85,7 @@ a = 1.2
 	cfg, err := Parse("", []byte(config))
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, cfg)
+	assert.Equal(t, expected, cfg.(*Config))
 }
 
 func TestComments(t *testing.T) {
@@ -114,7 +114,7 @@ fux = baz # not a comment
 	cfg, err := Parse("", []byte(config))
 
 	assert.NoError(t, err)
-	assert.Equal(t, expected, cfg)
+	assert.Equal(t, expected, cfg.(*Config))
 }
 
 func TestInvalid(t *testing.T) {
