@@ -39,7 +39,7 @@ func runBlocks(encoder *json.Encoder, blocks []*Block) error {
 	return nil
 }
 
-func writeStatus(blocks []*Block) error {
+func writeStatus(blocks []*Block, interval int) error {
 	encoder := json.NewEncoder(i3Output)
 	encoder.SetEscapeHTML(false) // may contain Pango markup
 	encoder.SetIndent("", "")    // don't indent
@@ -63,7 +63,7 @@ func writeStatus(blocks []*Block) error {
 		return err
 	}
 
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	defer ticker.Stop()
 
 	for _ = range ticker.C {
@@ -101,7 +101,7 @@ func run() error {
 		blocks = append(blocks, b)
 	}
 
-	if err = writeStatus(blocks); err != nil {
+	if err = writeStatus(blocks, defaultOptions.Interval); err != nil {
 		return err
 	}
 
