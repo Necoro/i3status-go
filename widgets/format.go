@@ -12,9 +12,11 @@ func init() {
 	u.DefaultFmtOptions.Short = true
 }
 
-type Formatter func(data any) (string, error)
+type Formatter[D any] struct {
+	fn func(data D) (string, error)
+}
 
-func NewFormatter(format string) (Formatter, error) {
+func (f *Formatter[D]) build(format string) error {
 	tpl, err := template.New("Format").
 		Funcs(template.FuncMap{
 			"Scale":  scale,
@@ -24,17 +26,28 @@ func NewFormatter(format string) (Formatter, error) {
 		Parse(format)
 
 	if err != nil {
-		return nil, fmt.Errorf("parsing Format: %w", err)
+		return fmt.Errorf("parsing Format: %w", err)
 	}
 
-	return func(data any) (string, error) {
+	f.fn = func(data D) (string, error) {
 		var sb strings.Builder
 		if err := tpl.Execute(&sb, data); err != nil {
 			return "", fmt.Errorf("formatting: %w", err)
 		}
 
 		return sb.String(), nil
-	}, nil
+	}
+	return nil
+}
+
+func (f *Formatter[D]) Format(format string, data D) (string, error) {
+	if f.fn == nil {
+		if err := f.build(format); err != nil {
+			return "", err
+		}
+	}
+
+	return f.fn(data)
 }
 
 type valueFormat struct {

@@ -26,7 +26,7 @@ type Params struct {
 
 type Widget struct {
 	params         Params
-	formatter      widgets.Formatter
+	formatter      widgets.Formatter[Data]
 	barchart       barchart
 	prevCpuStats   []Stat
 	prevAvgCpuStat Stat
@@ -134,16 +134,8 @@ func (w *Widget) Run() (d widgets.Data, err error) {
 	return
 }
 
-func (w *Widget) format(data Data) (string, error) {
-	if w.formatter == nil {
-		if formatter, err := widgets.NewFormatter(w.params.Format); err != nil {
-			return "", err
-		} else {
-			w.formatter = formatter
-		}
-	}
-
-	return w.formatter(data)
+func (w *Widget) format(d Data) (string, error) {
+	return w.formatter.Format(w.params.Format, d)
 }
 
 func (w *Widget) Shutdown() {

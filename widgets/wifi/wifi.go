@@ -32,8 +32,8 @@ type Params struct {
 type Widget struct {
 	params        Params
 	client        *wifi.Client
-	formatter     widgets.Formatter
-	downFormatter widgets.Formatter
+	formatter     widgets.Formatter[Data]
+	downFormatter widgets.Formatter[Data]
 }
 
 type Data struct {
@@ -51,27 +51,11 @@ type Data struct {
 }
 
 func (w *Widget) format(data Data) (string, error) {
-	if w.formatter == nil {
-		if formatter, err := widgets.NewFormatter(w.params.Format); err != nil {
-			return "", err
-		} else {
-			w.formatter = formatter
-		}
-	}
-
-	return w.formatter(data)
+	return w.formatter.Format(w.params.Format, data)
 }
 
 func (w *Widget) formatDown(data Data) (string, error) {
-	if w.downFormatter == nil {
-		if downFormatter, err := widgets.NewFormatter(w.params.DownFormat); err != nil {
-			return "", err
-		} else {
-			w.downFormatter = downFormatter
-		}
-	}
-
-	return w.downFormatter(data)
+	return w.downFormatter.Format(w.params.DownFormat, data)
 }
 
 func (w *Widget) Name() string {
