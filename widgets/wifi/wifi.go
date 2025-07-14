@@ -184,8 +184,8 @@ func (w *Widget) Params() any {
 func init() {
 	widgets.Register(name, func() widgets.Widget {
 		return &Widget{params: Params{
-			Format:     "{{.Interface}}: {{.SSID}} {{.Frequency | As GHz}}",
-			DownFormat: "{{.Interface}}: not connected",
+			Format:     `{{.Interface}}: {{.SSID}} {{.Frequency | As "GHz"}}`,
+			DownFormat: `{{.Interface}}: not connected`,
 			LevelGood:  70,
 			LevelBad:   20,
 		}}
