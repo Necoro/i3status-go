@@ -18,6 +18,7 @@ const (
 
 type Params struct {
 	// Format the output string. Takes a Go template string.
+	// For possible values to be used, see [Data].
 	Format string
 	// Interface to look for. If empty, it takes the first one.
 	Interface string

@@ -13,7 +13,10 @@ import (
 const name = "clock"
 
 type Params struct {
+	// Format is the Go time format string, see [time.Layout].
 	Format string
+	// Locale to use for things like names of days. If non-empty, we use [monday] to do the localization.
+	// See [monday.Locale] for details and supported locales.
 	Locale string
 }
 

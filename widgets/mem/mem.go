@@ -13,6 +13,7 @@ const (
 
 type Params struct {
 	// Format the output string. Takes a Go template string.
+	// For possible values to be used, see [Data].
 	Format string
 	// LevelGood is the upper bound of 'used percentage' for the good level.
 	LevelGood int

@@ -17,6 +17,8 @@ const (
 )
 
 type Params struct {
+	// Format the output string. Takes a Go template string.
+	// For possible values to be used, see [Data].
 	Format string
 	// LevelGood is the upper bound for the good level.
 	LevelGood int
