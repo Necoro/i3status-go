@@ -5,7 +5,7 @@ go 1.24
 require (
 	github.com/Necoro/go-units v0.0.0-20250623145747-e3b9a5097790
 	github.com/alecthomas/assert/v2 v2.11.0
-	github.com/go-viper/mapstructure/v2 v2.3.0
+	github.com/go-viper/mapstructure/v2 v2.4.0
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
 	github.com/mdlayher/wifi v0.6.0
 	github.com/prometheus/procfs v0.17.0
