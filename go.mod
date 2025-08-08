@@ -9,7 +9,7 @@ require (
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
 	github.com/mdlayher/wifi v0.6.0
 	github.com/prometheus/procfs v0.17.0
-	golang.org/x/text v0.27.0
+	golang.org/x/text v0.28.0
 )
 
 require (
