@@ -9,7 +9,7 @@ require (
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
 	github.com/mdlayher/wifi v0.6.0
 	github.com/prometheus/procfs v0.19.2
-	golang.org/x/text v0.27.0
+	golang.org/x/text v0.33.0
 )
 
 require (
@@ -23,6 +23,6 @@ require (
 	github.com/mdlayher/socket v0.5.1 // indirect
 	golang.org/x/crypto v0.40.0 // indirect
 	golang.org/x/net v0.42.0 // indirect
-	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 )
