@@ -1,6 +1,6 @@
 module github.com/Necoro/i3status-go
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/Necoro/go-units v0.0.0-20250623145747-e3b9a5097790
@@ -9,7 +9,7 @@ require (
 	github.com/goodsign/monday v1.0.3-0.20250616100923-694d8d5f7fb3
 	github.com/mdlayher/wifi v0.7.2
 	github.com/prometheus/procfs v0.19.2
-	golang.org/x/text v0.32.0
+	golang.org/x/text v0.35.0
 )
 
 require (
@@ -22,6 +22,6 @@ require (
 	github.com/mdlayher/socket v0.5.1 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 )
